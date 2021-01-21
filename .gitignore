@@ -1,3 +1,5 @@
 .snowpack
-build
+client/build
 node_modules
+.env
+client/.env
