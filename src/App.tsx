@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
 
@@ -6,34 +7,29 @@ interface AppProps {}
 
 function App({}: AppProps) {
   // Create the count state.
-  const [count, setCount] = useState(0);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   // Create the counter (+1 every second).
   useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
+    axios.get('http://localhost:5000/api/v1/posts').then((response: any) => {
+      console.log(response);
+      setData(response);
+      setLoading(false);
+    });
+  }, []);
   // Return the App component.
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        data.data.data.post.map((el: any) => (
+          <div
+            key={el.id}
+            dangerouslySetInnerHTML={{ __html: el.description }}
+          />
+        ))
+      )}
     </div>
   );
 }
